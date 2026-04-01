@@ -2,42 +2,65 @@
 <html lang="kk">
 <head>
     <meta charset="UTF-8">
-    <title>Quiz Бастау</title>
+    <title>Quiz Симуляторы | Басты бет</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background-color: #ffffff; font-family: sans-serif; color: #1a1a1a; }
-        .btn { width: 100%; padding: 12px; border-radius: 8px; font-weight: bold; transition: 0.2s; border: 1px solid #1a1a1a; }
+        .btn { width: 100%; padding: 16px; border-radius: 12px; font-weight: 800; transition: 0.2s; border: 2px solid #1a1a1a; text-transform: uppercase; letter-spacing: 1px; }
         .btn-black { background: #1a1a1a; color: white; }
-        .btn-white { background: white; color: #1a1a1a; margin-top: 10px; }
-        .btn:hover { opacity: 0.8; }
-        .file-box { border: 2px dashed #ccc; padding: 20px; border-radius: 12px; cursor: pointer; margin-bottom: 20px; }
+        .btn-white { background: white; color: #1a1a1a; margin-top: 12px; }
+        .btn:active { transform: scale(0.98); }
+        .file-box { border: 2px dashed #e5e7eb; padding: 30px; border-radius: 16px; cursor: pointer; margin-bottom: 24px; transition: 0.2s; }
+        .file-box:hover { border-color: #1a1a1a; background: #f9fafb; }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-6">
-    <div class="max-w-xs w-full text-center">
-        <h1 class="text-2xl font-bold mb-6">ТЕСТ СИМУЛЯТОРЫ</h1>
+    <div class="max-w-sm w-full text-center">
+        <h1 class="text-3xl font-black mb-2 italic">ҰБТ СИМУЛЯТОРЫ</h1>
+        <p class="text-gray-400 text-xs mb-8 uppercase tracking-widest font-bold">Minimalist Edition</p>
         
         <div class="file-box" onclick="document.getElementById('jsonInput').click()">
-            <input type="file" id="jsonInput" accept=".json" class="hidden" onchange="updateFileName()">
-            <p id="fileName" class="text-sm text-gray-500">JSON файлын таңдаңыз</p>
+            <input type="file" id="jsonInput" accept=".json" class="hidden" onchange="handleFileSelect()">
+            <div id="upload-icon" class="mb-2">📁</div>
+            <p id="fileName" class="text-sm font-bold text-gray-500">JSON файлын жүктеңіз</p>
         </div>
 
-        <button onclick="startQuiz()" class="btn btn-black">БАСТАУ</button>
-        <button onclick="window.location.href='history.html'" class="btn btn-white">ТАРЫХ</button>
+        <button onclick="startQuiz()" class="btn btn-black">ТЕСТТІ БАСТАУ</button>
+        <button onclick="window.location.href='history.html'" class="btn btn-white text-sm">Нәтижелер тарихы</button>
     </div>
 
     <script>
-        function updateFileName() {
+        function handleFileSelect() {
             const input = document.getElementById('jsonInput');
-            if(input.files[0]) document.getElementById('fileName').innerText = input.files[0].name;
+            const fileNameDisplay = document.getElementById('fileName');
+            if (input.files[0]) {
+                fileNameDisplay.innerText = input.files[0].name;
+                fileNameDisplay.classList.remove('text-gray-500');
+                fileNameDisplay.classList.add('text-blue-600');
+            }
         }
 
         function startQuiz() {
             const fileInput = document.getElementById('jsonInput');
-            if (!fileInput.files[0]) return alert('Алдымен файлды жүктеңіз!');
-            // GitHub Pages-те файлды серверге сақтау мүмкін емес, 
-            // сондықтан क्वेश्चंस.json файлы репозиторийде алдын-ала болуы керек.
-            window.location.href = 'play.html';
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert('Өтініш, алдымен тест файлын (.json) таңдаңыз!');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const content = e.target.result;
+                    JSON.parse(content); // JSON форматын тексеру
+                    localStorage.setItem('currentQuiz', content); // Браузер жадына сақтау
+                    window.location.href = 'play.html'; // Келесі бетке өту
+                } catch (err) {
+                    alert('Қате: Файл форматы дұрыс емес! JSON файлын тексеріңіз.');
+                }
+            };
+            reader.readAsText(file);
         }
     </script>
 </body>
