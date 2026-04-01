@@ -2,153 +2,128 @@
 <html lang="kk">
 <head>
     <meta charset="UTF-8">
-    <title>ҰБТ Симуляторы | Play</title>
+    <title>Тест өту</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #f8fafc; font-family: 'Inter', sans-serif; }
-        /* Сұрақтар навигациясы */
-        .q-nav { display: flex; gap: 10px; overflow-x: auto; padding: 15px 20px; background: white; border-bottom: 1px solid #f1f5f9; }
-        .q-item { 
-            min-width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; 
-            border-radius: 12px; font-weight: 800; font-size: 14px; cursor: pointer; transition: 0.2s;
-        }
-        .q-current { background: #2563eb; color: white; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2); }
-        .q-answered { background: #eff6ff; color: #2563eb; }
-        .q-empty { background: white; color: #cbd5e1; border: 1px solid #f1f5f9; }
-        
-        /* Жауап батырмалары */
-        .ans-card { 
-            width: 100%; text-align: left; padding: 1.25rem; border-radius: 1.25rem; 
-            border: 2px solid #f8fafc; background: white; transition: 0.2s;
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
-        }
-        .ans-card.active { border-color: #2563eb; background-color: #f0f7ff; color: #1e40af; font-weight: 700; }
-        
-        /* Қатемен жұмыс стилі */
-        .rev-item { padding: 1rem; border-radius: 1rem; margin-bottom: 10px; border-left: 5px solid; }
-        .rev-correct { background: #f0fdf4; border-color: #22c55e; }
-        .rev-wrong { background: #fef2f2; border-color: #ef4444; }
+        body { background-color: #ffffff; font-family: sans-serif; color: #1a1a1a; }
+        .nav-dot { min-width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border: 1px solid #eee; border-radius: 6px; cursor: pointer; font-size: 12px; }
+        .nav-active { background: #1a1a1a; color: white; border-color: #1a1a1a; }
+        .ans-card { width: 100%; text-align: left; padding: 15px; border: 1px solid #eee; border-radius: 10px; margin-bottom: 8px; transition: 0.2s; }
+        .ans-active { border-color: #1a1a1a; background: #fafafa; font-weight: bold; }
+        .rev-card { padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 1px solid #eee; text-align: left; }
+        .correct { border-left: 4px solid #22c55e; background: #f0fdf4; }
+        .wrong { border-left: 4px solid #ef4444; background: #fef2f2; }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4">
 
-    <div id="quiz-container" class="max-w-3xl w-full bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden">
-        <div class="px-8 py-5 bg-slate-50/50 border-b flex justify-between items-center">
-            <span id="q-count" class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">СҰРАҚ 1 / 40</span>
-            <button onclick="showFinalResult()" class="text-[11px] font-black text-rose-500 uppercase tracking-widest italic hover:opacity-70">АЯҚТАУ</button>
+    <div id="game-card" class="max-w-xl w-full border p-6 rounded-2xl">
+        <div class="flex justify-between items-center mb-4 pb-4 border-b">
+            <span id="progress" class="text-xs font-bold text-gray-400">СҰРАҚ</span>
+            <button onclick="finish()" class="text-xs text-red-500 font-bold uppercase">Аяқтау</button>
         </div>
 
-        <div id="nav-bar" class="q-nav"></div>
+        <div id="nav-bar" class="flex gap-2 overflow-x-auto mb-6 py-2"></div>
 
-        <div class="p-8 md:p-12">
-            <h2 id="q-text" class="text-xl md:text-2xl font-bold text-slate-800 mb-10 leading-snug">Жүктелуде...</h2>
-            <div id="ans-list"></div>
+        <h2 id="q-text" class="text-lg font-bold mb-6">Жүктелуде...</h2>
+        <div id="ans-list" class="mb-8"></div>
 
-            <div class="flex justify-between items-center pt-8 border-t border-slate-50 mt-6">
-                <button onclick="move(-1)" id="prev" class="text-slate-400 font-bold text-xs uppercase tracking-widest">← АРТҚА</button>
-                <button onclick="move(1)" id="next" class="px-12 py-4 bg-[#0f172a] text-white rounded-2xl font-bold hover:bg-slate-800 transition-all active:scale-95 uppercase text-sm tracking-widest">КЕЛЕСІ →</button>
-            </div>
+        <div class="flex justify-between border-t pt-6">
+            <button onclick="move(-1)" id="prevBtn" class="text-gray-400 font-bold text-xs">← АРТҚА</button>
+            <button onclick="move(1)" class="px-8 py-3 bg-black text-white rounded-lg font-bold text-sm">КЕЛЕСІ →</button>
         </div>
     </div>
 
-    <div id="result-container" class="hidden max-w-2xl w-full bg-white rounded-[3rem] shadow-2xl p-10 text-center border border-slate-100">
-        <h2 class="text-slate-400 font-bold uppercase tracking-widest text-sm mb-4">Тест аяқталды</h2>
-        <div class="text-[100px] font-light text-blue-500 leading-none mb-10" id="final-score">0 / 0</div>
+    <div id="res-card" class="hidden max-w-xl w-full text-center border p-10 rounded-2xl">
+        <p class="text-gray-400 font-bold text-xs mb-4 uppercase">Нәтиже</p>
+        <h1 id="score" class="text-7xl font-light mb-10 text-blue-600">0 / 0</h1>
         
-        <div class="text-left mb-6">
-            <h3 class="font-black text-slate-800 uppercase text-xs tracking-widest mb-4">Жауаптарды тексеру:</h3>
-            <div id="review-area" class="max-h-[350px] overflow-y-auto pr-2 space-y-3 text-sm"></div>
-        </div>
-
-        <button onclick="location.href='index.html'" class="w-full py-5 bg-blue-600 text-white rounded-2xl font-black shadow-lg hover:bg-blue-700 transition-all uppercase">Басты бетке қайту</button>
+        <div id="review-list" class="max-h-80 overflow-y-auto mb-8 space-y-3"></div>
+        
+        <button onclick="location.href='index.html'" class="w-full py-4 bg-black text-white rounded-lg font-bold">БАСТЫ БЕТ</button>
     </div>
 
     <script>
-        let currentIdx = 0, questions = [], answers = [];
+        let current = 0, quiz = [], userAns = [];
 
         async function init() {
             try {
                 const r = await fetch("questions.json");
-                questions = await r.json();
-                answers = questions.map(() => []);
-                renderQuestion();
-            } catch (e) { alert("questions.json файлы табылмады!"); }
+                quiz = await r.json();
+                userAns = quiz.map(() => []);
+                render();
+            } catch(e) { alert("questions.json табылмады!"); }
         }
 
-        function renderNav() {
-            const bar = document.getElementById("nav-bar");
-            bar.innerHTML = "";
-            questions.forEach((_, i) => {
-                const div = document.createElement("div");
-                div.innerText = i + 1;
-                let cls = (i === currentIdx) ? "q-current" : (answers[i].length > 0 ? "q-answered" : "q-empty");
-                div.className = `q-item ${cls}`;
-                div.onclick = () => { currentIdx = i; renderQuestion(); };
-                bar.appendChild(div);
-            });
-        }
-
-        function renderQuestion() {
-            const q = questions[currentIdx];
+        function render() {
+            const q = quiz[current];
             document.getElementById("q-text").innerText = q.question;
-            document.getElementById("q-count").innerText = `СҰРАҚ ${currentIdx + 1} / ${questions.length}`;
-            document.getElementById("prev").style.visibility = currentIdx === 0 ? "hidden" : "visible";
-            renderNav();
+            document.getElementById("progress").innerText = `СҰРАҚ ${current + 1} / ${quiz.length}`;
+            document.getElementById("prevBtn").style.visibility = current === 0 ? "hidden" : "visible";
 
+            // Nav
+            const nav = document.getElementById("nav-bar");
+            nav.innerHTML = "";
+            quiz.forEach((_, i) => {
+                const d = document.createElement("div");
+                d.className = `nav-dot ${i === current ? 'nav-active' : ''}`;
+                d.innerText = i + 1;
+                d.onclick = () => { current = i; render(); };
+                nav.appendChild(d);
+            });
+
+            // Answers
             const list = document.getElementById("ans-list");
             list.innerHTML = "";
-            q.options.forEach(opt => {
-                const isSel = answers[currentIdx].includes(opt);
-                const btn = document.createElement("button");
-                btn.className = `ans-card ${isSel ? 'active' : ''}`;
-                btn.innerHTML = `<span>${opt}</span><div class="w-6 h-6 border-2 rounded-lg ${isSel ? 'bg-blue-600 border-blue-600' : 'border-slate-200'}"></div>`;
-                btn.onclick = () => {
-                    const isMult = Array.isArray(q.answer) && q.answer.length > 1;
-                    if (!isMult) answers[currentIdx] = [opt];
+            q.options.forEach(o => {
+                const sel = userAns[current].includes(o);
+                const b = document.createElement("button");
+                b.className = `ans-card ${sel ? 'ans-active' : ''}`;
+                b.innerText = o;
+                b.onclick = () => {
+                    const mult = Array.isArray(q.answer) && q.answer.length > 1;
+                    if(!mult) userAns[current] = [o];
                     else {
-                        const i = answers[currentIdx].indexOf(opt);
-                        if (i > -1) answers[currentIdx].splice(i, 1);
-                        else if (answers[currentIdx].length < 3) answers[currentIdx].push(opt);
+                        const idx = userAns[current].indexOf(o);
+                        if(idx > -1) userAns[current].splice(idx, 1);
+                        else userAns[current].push(o);
                     }
-                    renderQuestion();
+                    render();
                 };
-                list.appendChild(btn);
+                list.appendChild(b);
             });
         }
 
-        function move(step) {
-            if (currentIdx + step >= 0 && currentIdx + step < questions.length) {
-                currentIdx += step;
-                renderQuestion();
-            } else if (currentIdx + step >= questions.length) showFinalResult();
+        function move(s) {
+            if(current + s >= 0 && current + s < quiz.length) { current += s; render(); }
+            else if(current + s >= quiz.length) finish();
         }
 
-        function showFinalResult() {
-            let score = 0, max = 0;
-            const area = document.getElementById("review-area");
-            area.innerHTML = "";
+        function finish() {
+            let s = 0, m = 0;
+            const rev = document.getElementById("review-list");
+            rev.innerHTML = "";
 
-            questions.forEach((q, i) => {
-                const correct = Array.isArray(q.answer) ? q.answer : [q.answer];
-                const user = answers[i];
-                const isCorrect = JSON.stringify(correct.sort()) === JSON.stringify(user.sort());
-
-                if (correct.length > 1) { max += 2; if (isCorrect) score += 2; }
-                else { max += 1; if (isCorrect) score += 1; }
+            quiz.forEach((q, i) => {
+                const cor = Array.isArray(q.answer) ? q.answer : [q.answer];
+                const usr = userAns[i];
+                const ok = JSON.stringify(cor.sort()) === JSON.stringify(usr.sort());
+                
+                if(cor.length > 1) { m += 2; if(ok) s += 2; }
+                else { m += 1; if(ok) s += 1; }
 
                 const div = document.createElement("div");
-                div.className = `rev-item ${isCorrect ? 'rev-correct' : 'rev-wrong'}`;
-                div.innerHTML = `<strong>${i+1}. ${q.question}</strong><br>
-                                 <span class="opacity-60 text-xs">Сенің жауабың: ${user.join(", ") || "—"}</span><br>
-                                 <span class="text-xs font-bold">Дұрыс: ${correct.join(", ")}</span>`;
-                area.appendChild(div);
+                div.className = `rev-card ${ok ? 'correct' : 'wrong'}`;
+                div.innerHTML = `<p class="text-sm font-bold">${i+1}. ${q.question}</p>
+                                 <p class="text-xs mt-2 opacity-60">Жауап: ${usr.join(", ") || "—"}</p>
+                                 <p class="text-xs font-bold">Дұрыс: ${cor.join(", ")}</p>`;
+                rev.appendChild(div);
             });
 
-            document.getElementById("quiz-container").classList.add("hidden");
-            document.getElementById("result-container").classList.remove("hidden");
-            document.getElementById("final-score").innerText = `${score} / ${max}`;
+            document.getElementById("game-card").classList.add("hidden");
+            document.getElementById("res-card").classList.remove("hidden");
+            document.getElementById("score").innerText = `${s} / ${m}`;
         }
-
         init();
     </script>
 </body>
