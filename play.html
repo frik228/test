@@ -2,129 +2,43 @@
 <html lang="kk">
 <head>
     <meta charset="UTF-8">
-    <title>Тест өту</title>
+    <title>Quiz Бастау</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background-color: #ffffff; font-family: sans-serif; color: #1a1a1a; }
-        .nav-dot { min-width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border: 1px solid #eee; border-radius: 6px; cursor: pointer; font-size: 12px; }
-        .nav-active { background: #1a1a1a; color: white; border-color: #1a1a1a; }
-        .ans-card { width: 100%; text-align: left; padding: 15px; border: 1px solid #eee; border-radius: 10px; margin-bottom: 8px; transition: 0.2s; }
-        .ans-active { border-color: #1a1a1a; background: #fafafa; font-weight: bold; }
-        .rev-card { padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 1px solid #eee; text-align: left; }
-        .correct { border-left: 4px solid #22c55e; background: #f0fdf4; }
-        .wrong { border-left: 4px solid #ef4444; background: #fef2f2; }
+        .btn { width: 100%; padding: 12px; border-radius: 8px; font-weight: bold; transition: 0.2s; border: 1px solid #1a1a1a; }
+        .btn-black { background: #1a1a1a; color: white; }
+        .btn-white { background: white; color: #1a1a1a; margin-top: 10px; }
+        .btn:hover { opacity: 0.8; }
+        .file-box { border: 2px dashed #ccc; padding: 20px; border-radius: 12px; cursor: pointer; margin-bottom: 20px; }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4">
-
-    <div id="game-card" class="max-w-xl w-full border p-6 rounded-2xl">
-        <div class="flex justify-between items-center mb-4 pb-4 border-b">
-            <span id="progress" class="text-xs font-bold text-gray-400">СҰРАҚ</span>
-            <button onclick="finish()" class="text-xs text-red-500 font-bold uppercase">Аяқтау</button>
+<body class="min-h-screen flex items-center justify-center p-6">
+    <div class="max-w-xs w-full text-center">
+        <h1 class="text-2xl font-bold mb-6">ТЕСТ СИМУЛЯТОРЫ</h1>
+        
+        <div class="file-box" onclick="document.getElementById('jsonInput').click()">
+            <input type="file" id="jsonInput" accept=".json" class="hidden" onchange="updateFileName()">
+            <p id="fileName" class="text-sm text-gray-500">JSON файлын таңдаңыз</p>
         </div>
 
-        <div id="nav-bar" class="flex gap-2 overflow-x-auto mb-6 py-2"></div>
-
-        <h2 id="q-text" class="text-lg font-bold mb-6">Жүктелуде...</h2>
-        <div id="ans-list" class="mb-8"></div>
-
-        <div class="flex justify-between border-t pt-6">
-            <button onclick="move(-1)" id="prevBtn" class="text-gray-400 font-bold text-xs">← АРТҚА</button>
-            <button onclick="move(1)" class="px-8 py-3 bg-black text-white rounded-lg font-bold text-sm">КЕЛЕСІ →</button>
-        </div>
-    </div>
-
-    <div id="res-card" class="hidden max-w-xl w-full text-center border p-10 rounded-2xl">
-        <p class="text-gray-400 font-bold text-xs mb-4 uppercase">Нәтиже</p>
-        <h1 id="score" class="text-7xl font-light mb-10 text-blue-600">0 / 0</h1>
-        
-        <div id="review-list" class="max-h-80 overflow-y-auto mb-8 space-y-3"></div>
-        
-        <button onclick="location.href='index.html'" class="w-full py-4 bg-black text-white rounded-lg font-bold">БАСТЫ БЕТ</button>
+        <button onclick="startQuiz()" class="btn btn-black">БАСТАУ</button>
+        <button onclick="window.location.href='history.html'" class="btn btn-white">ТАРЫХ</button>
     </div>
 
     <script>
-        let current = 0, quiz = [], userAns = [];
-
-        async function init() {
-            try {
-                const r = await fetch("questions.json");
-                quiz = await r.json();
-                userAns = quiz.map(() => []);
-                render();
-            } catch(e) { alert("questions.json табылмады!"); }
+        function updateFileName() {
+            const input = document.getElementById('jsonInput');
+            if(input.files[0]) document.getElementById('fileName').innerText = input.files[0].name;
         }
 
-        function render() {
-            const q = quiz[current];
-            document.getElementById("q-text").innerText = q.question;
-            document.getElementById("progress").innerText = `СҰРАҚ ${current + 1} / ${quiz.length}`;
-            document.getElementById("prevBtn").style.visibility = current === 0 ? "hidden" : "visible";
-
-            // Nav
-            const nav = document.getElementById("nav-bar");
-            nav.innerHTML = "";
-            quiz.forEach((_, i) => {
-                const d = document.createElement("div");
-                d.className = `nav-dot ${i === current ? 'nav-active' : ''}`;
-                d.innerText = i + 1;
-                d.onclick = () => { current = i; render(); };
-                nav.appendChild(d);
-            });
-
-            // Answers
-            const list = document.getElementById("ans-list");
-            list.innerHTML = "";
-            q.options.forEach(o => {
-                const sel = userAns[current].includes(o);
-                const b = document.createElement("button");
-                b.className = `ans-card ${sel ? 'ans-active' : ''}`;
-                b.innerText = o;
-                b.onclick = () => {
-                    const mult = Array.isArray(q.answer) && q.answer.length > 1;
-                    if(!mult) userAns[current] = [o];
-                    else {
-                        const idx = userAns[current].indexOf(o);
-                        if(idx > -1) userAns[current].splice(idx, 1);
-                        else userAns[current].push(o);
-                    }
-                    render();
-                };
-                list.appendChild(b);
-            });
+        function startQuiz() {
+            const fileInput = document.getElementById('jsonInput');
+            if (!fileInput.files[0]) return alert('Алдымен файлды жүктеңіз!');
+            // GitHub Pages-те файлды серверге сақтау мүмкін емес, 
+            // сондықтан क्वेश्चंस.json файлы репозиторийде алдын-ала болуы керек.
+            window.location.href = 'play.html';
         }
-
-        function move(s) {
-            if(current + s >= 0 && current + s < quiz.length) { current += s; render(); }
-            else if(current + s >= quiz.length) finish();
-        }
-
-        function finish() {
-            let s = 0, m = 0;
-            const rev = document.getElementById("review-list");
-            rev.innerHTML = "";
-
-            quiz.forEach((q, i) => {
-                const cor = Array.isArray(q.answer) ? q.answer : [q.answer];
-                const usr = userAns[i];
-                const ok = JSON.stringify(cor.sort()) === JSON.stringify(usr.sort());
-                
-                if(cor.length > 1) { m += 2; if(ok) s += 2; }
-                else { m += 1; if(ok) s += 1; }
-
-                const div = document.createElement("div");
-                div.className = `rev-card ${ok ? 'correct' : 'wrong'}`;
-                div.innerHTML = `<p class="text-sm font-bold">${i+1}. ${q.question}</p>
-                                 <p class="text-xs mt-2 opacity-60">Жауап: ${usr.join(", ") || "—"}</p>
-                                 <p class="text-xs font-bold">Дұрыс: ${cor.join(", ")}</p>`;
-                rev.appendChild(div);
-            });
-
-            document.getElementById("game-card").classList.add("hidden");
-            document.getElementById("res-card").classList.remove("hidden");
-            document.getElementById("score").innerText = `${s} / ${m}`;
-        }
-        init();
     </script>
 </body>
 </html>
