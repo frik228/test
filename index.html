@@ -2,47 +2,47 @@
 <html lang="kk">
 <head>
     <meta charset="UTF-8">
-    <title>Quiz Бастау</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ҰБТ Дайындық | Басты бет</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { -webkit-font-smoothing: antialiased; background-color: #f8fafc; }
+        .hero-gradient { background: radial-gradient(circle at top right, #e0f2fe 0%, #f8fafc 50%); }
+    </style>
 </head>
-<body class="bg-slate-100 min-h-screen flex items-center justify-center p-4">
-    <div class="bg-white p-10 rounded-3xl shadow-sm border border-slate-200 max-w-md w-full text-center">
-        <h1 class="text-2xl font-bold text-slate-800 mb-2">Web Тест</h1>
-        <p class="text-slate-400 text-sm mb-8">JSON файлын жүктеп, бастаңыз</p>
-        
-        <div class="mb-6">
-            <input type="file" id="jsonInput" accept=".json" class="hidden">
-            <label for="jsonInput" class="block w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl cursor-pointer hover:border-sky-400 hover:bg-sky-50 transition-all">
-                <span id="fileName" class="text-slate-500 font-medium">Файлды таңдаңыз</span>
-            </label>
+<body class="min-h-screen flex items-center justify-center p-6 hero-gradient font-sans">
+
+    <div class="max-w-md w-full text-center">
+        <div class="w-24 h-24 bg-blue-600 rounded-[2rem] shadow-2xl shadow-blue-200 flex items-center justify-center mx-auto mb-10 rotate-3">
+            <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+            </svg>
         </div>
 
-        <button onclick="uploadJSON()" class="w-full bg-slate-800 text-white py-4 rounded-xl font-bold hover:bg-slate-900 transition-all shadow-lg mb-4">Бастау</button>
-        
-        <button onclick="location.href='history.html'" class="w-full py-3 bg-white border border-slate-200 text-slate-600 rounded-xl font-bold text-sm hover:bg-slate-50 transition-all">
-            📊 Нәтижелер тарихы
-        </button>
+        <h1 class="text-4xl font-black text-slate-900 mb-4 tracking-tighter uppercase italic">ҰБТ Симуляторы</h1>
+        <p class="text-slate-500 mb-12 leading-relaxed font-medium">40 сұрақ • 120 минут • 50 балл<br>Нағыз ҰБТ форматындағы тест</p>
+
+        <div class="space-y-4">
+            <button onclick="startQuiz()" class="w-full py-5 bg-blue-600 text-white rounded-2xl font-black text-lg hover:bg-blue-700 shadow-xl shadow-blue-100 transition-all active:scale-95 uppercase tracking-widest">
+                Тестті бастау
+            </button>
+            
+            <button onclick="location.href='history.html'" class="w-full py-5 bg-white text-slate-600 rounded-2xl font-bold text-sm hover:bg-slate-50 border border-slate-200 transition-all uppercase tracking-widest">
+                Менің нәтижелерім
+            </button>
+        </div>
+
+        <p class="mt-12 text-[10px] font-black text-slate-300 uppercase tracking-[0.3em]">Jaryq Academy Style</p>
     </div>
 
     <script>
-        document.getElementById('jsonInput').onchange = function() {
-            if(this.files[0]) document.getElementById('fileName').innerText = this.files[0].name;
-        };
-
-        async function uploadJSON() {
-            const fileInput = document.getElementById('jsonInput');
-            if (!fileInput.files[0]) return alert('Файлды таңдаңыз!');
-
-            // Файл атын тақырып ретінде сақтау
-            const topicName = fileInput.files[0].name.replace('.json', '');
-            localStorage.setItem('last_topic_name', topicName);
-
-            const formData = new FormData();
-            formData.append('jsonFile', fileInput.files[0]);
+        function startQuiz() {
+            // Тест тақырыбын сақтаймыз
+            localStorage.setItem('last_topic_name', 'Биология (ҰБТ)'); 
             
-            const res = await fetch('/upload-json', { method: 'POST', body: formData });
-            const data = await res.json();
-            if (data.status === 'success') window.location.href = 'play.html';
+            // Тест бетіне (play.html) көшеміз
+            // GitHub Pages-те файлдар бір папкада болса, жай ғана атын жазу жеткілікті
+            window.location.href = 'play.html';
         }
     </script>
 </body>
