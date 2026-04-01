@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <title>Нәтижелер тарихы</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 min-h-screen p-4 md:p-10 font-sans text-slate-900">
+    <div class="max-w-4xl mx-auto">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-2xl font-black text-slate-800 uppercase italic">Нәтижелер тарихы</h1>
+            <button onclick="location.href='index.html'" class="px-5 py-2 bg-white border border-slate-200 rounded-xl font-bold text-xs hover:bg-slate-50 transition-all uppercase">← Артқа</button>
+        </div>
+
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+            <table class="w-full text-left">
+                <thead class="bg-slate-50 border-b border-slate-100">
+                    <tr class="text-[10px] font-black uppercase text-slate-400 tracking-widest">
+                        <th class="p-5">Уақыты</th>
+                        <th class="p-5">Тақырыбы</th>
+                        <th class="p-5 text-center">Нәтиже</th>
+                    </tr>
+                </thead>
+                <tbody id="history-table-body" class="divide-y divide-slate-50"></tbody>
+            </table>
+            <div id="empty-msg" class="hidden p-20 text-center text-slate-400 italic">Әзірге нәтижелер жоқ...</div>
+        </div>
+
+        <button onclick="localStorage.removeItem('quiz_history'); location.reload();" class="mt-8 text-[10px] font-bold text-rose-300 hover:text-rose-500 uppercase tracking-widest">Тарихты тазалау</button>
+    </div>
+
+    <script>
+        const history = JSON.parse(localStorage.getItem('quiz_history') || '[]');
+        const tbody = document.getElementById('history-table-body');
+        if (!history.length) {
+            document.getElementById('empty-msg').classList.remove('hidden');
+        } else {
+            tbody.innerHTML = history.map(item => `
+                <tr class="hover:bg-slate-50/50 transition-colors">
+                    <td class="p-5 text-xs text-slate-500">${item.date}</td>
+                    <td class="p-5 text-sm font-bold text-slate-700">${item.topic}</td>
+                    <td class="p-5 text-center">
+                        <span class="px-3 py-1 rounded-full text-[10px] font-black ${item.score / item.total > 0.6 ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}">
+                            ${item.score} / ${item.total}
+                        </span>
+                    </td>
+                </tr>
+            `).join('');
+        }
+    </script>
+</body>
+</html>

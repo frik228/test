@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz Бастау</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white p-10 rounded-3xl shadow-sm border border-slate-200 max-w-md w-full text-center">
+        <h1 class="text-2xl font-bold text-slate-800 mb-2">Web Тест</h1>
+        <p class="text-slate-400 text-sm mb-8">JSON файлын жүктеп, бастаңыз</p>
+        
+        <div class="mb-6">
+            <input type="file" id="jsonInput" accept=".json" class="hidden">
+            <label for="jsonInput" class="block w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl cursor-pointer hover:border-sky-400 hover:bg-sky-50 transition-all">
+                <span id="fileName" class="text-slate-500 font-medium">Файлды таңдаңыз</span>
+            </label>
+        </div>
+
+        <button onclick="uploadJSON()" class="w-full bg-slate-800 text-white py-4 rounded-xl font-bold hover:bg-slate-900 transition-all shadow-lg mb-4">Бастау</button>
+        
+        <button onclick="location.href='history.html'" class="w-full py-3 bg-white border border-slate-200 text-slate-600 rounded-xl font-bold text-sm hover:bg-slate-50 transition-all">
+            📊 Нәтижелер тарихы
+        </button>
+    </div>
+
+    <script>
+        document.getElementById('jsonInput').onchange = function() {
+            if(this.files[0]) document.getElementById('fileName').innerText = this.files[0].name;
+        };
+
+        async function uploadJSON() {
+            const fileInput = document.getElementById('jsonInput');
+            if (!fileInput.files[0]) return alert('Файлды таңдаңыз!');
+
+            // Файл атын тақырып ретінде сақтау
+            const topicName = fileInput.files[0].name.replace('.json', '');
+            localStorage.setItem('last_topic_name', topicName);
+
+            const formData = new FormData();
+            formData.append('jsonFile', fileInput.files[0]);
+            
+            const res = await fetch('/upload-json', { method: 'POST', body: formData });
+            const data = await res.json();
+            if (data.status === 'success') window.location.href = 'play.html';
+        }
+    </script>
+</body>
+</html>
