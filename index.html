@@ -2,26 +2,43 @@
 <html lang="kk">
 <head>
     <meta charset="UTF-8">
-    <title>ҰБТ</title>
+    <title>Quiz Бастау</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background: radial-gradient(circle at top right, #e0f2fe 0%, #f8fafc 50%); font-family: sans-serif; }
+        body { background-color: #ffffff; font-family: sans-serif; color: #1a1a1a; }
+        .btn { width: 100%; padding: 12px; border-radius: 8px; font-weight: bold; transition: 0.2s; border: 1px solid #1a1a1a; }
+        .btn-black { background: #1a1a1a; color: white; }
+        .btn-white { background: white; color: #1a1a1a; margin-top: 10px; }
+        .btn:hover { opacity: 0.8; }
+        .file-box { border: 2px dashed #ccc; padding: 20px; border-radius: 12px; cursor: pointer; margin-bottom: 20px; }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-6">
-    <div class="max-w-md w-full text-center">
-        <div class="w-20 h-20 bg-blue-600 rounded-[2rem] shadow-2xl shadow-blue-200 flex items-center justify-center mx-auto mb-10 rotate-3">
-            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-            </svg>
+    <div class="max-w-xs w-full text-center">
+        <h1 class="text-2xl font-bold mb-6">ТЕСТ СИМУЛЯТОРЫ</h1>
+        
+        <div class="file-box" onclick="document.getElementById('jsonInput').click()">
+            <input type="file" id="jsonInput" accept=".json" class="hidden" onchange="updateFileName()">
+            <p id="fileName" class="text-sm text-gray-500">JSON файлын таңдаңыз</p>
         </div>
-        <h1 class="text-3xl font-black text-slate-900 mb-4 tracking-tighter uppercase italic">ҰБТ Симуляторы</h1>
-        <p class="text-slate-400 mb-12 text-sm">40 сұрақ • 120 минут • 50 балл<br>Нағыз ҰБТ форматындағы тест</p>
-        <div class="space-y-4">
-            <button onclick="window.location.href='play.html'" class="w-full py-5 bg-blue-600 text-white rounded-2xl font-black text-lg hover:bg-blue-700 shadow-xl shadow-blue-100 transition-all active:scale-95 uppercase tracking-widest">ТЕСТТІ БАСТАУ</button>
-            <button onclick="window.location.href='history.html'" class="w-full py-5 bg-white text-slate-600 rounded-2xl font-bold text-sm hover:bg-slate-50 border border-slate-200 transition-all uppercase tracking-widest">МЕНІҢ НӘТИЖЕЛЕРІМ</button>
-        </div>
-        <p class="mt-12 text-[10px] font-black text-slate-300 uppercase tracking-[0.3em]">JARYQ ACADEMY STYLE</p>
+
+        <button onclick="startQuiz()" class="btn btn-black">БАСТАУ</button>
+        <button onclick="window.location.href='history.html'" class="btn btn-white">ТАРЫХ</button>
     </div>
+
+    <script>
+        function updateFileName() {
+            const input = document.getElementById('jsonInput');
+            if(input.files[0]) document.getElementById('fileName').innerText = input.files[0].name;
+        }
+
+        function startQuiz() {
+            const fileInput = document.getElementById('jsonInput');
+            if (!fileInput.files[0]) return alert('Алдымен файлды жүктеңіз!');
+            // GitHub Pages-те файлды серверге сақтау мүмкін емес, 
+            // сондықтан क्वेश्चंस.json файлы репозиторийде алдын-ала болуы керек.
+            window.location.href = 'play.html';
+        }
+    </script>
 </body>
 </html>
