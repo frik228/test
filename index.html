@@ -4,49 +4,24 @@
     <meta charset="UTF-8">
     <title>ҰБТ Симуляторы</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: radial-gradient(circle at top right, #e0f2fe 0%, #f8fafc 50%); font-family: sans-serif; }
+    </style>
 </head>
-<body class="min-h-screen flex items-center justify-center bg-slate-50 p-6">
+<body class="min-h-screen flex items-center justify-center p-6">
     <div class="max-w-md w-full text-center">
-        <div class="w-20 h-20 bg-blue-600 rounded-3xl shadow-xl flex items-center justify-center mx-auto mb-8">
+        <div class="w-20 h-20 bg-blue-600 rounded-[2rem] shadow-2xl shadow-blue-200 flex items-center justify-center mx-auto mb-10 rotate-3">
             <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
             </svg>
         </div>
-
-        <h1 class="text-3xl font-black text-slate-800 mb-2 uppercase tracking-tight">ҰБТ Симуляторы</h1>
-        <p class="text-slate-400 text-sm mb-10">Нағыз ҰБТ форматындағы тест</p>
-
-        <div class="mb-6">
-            <input type="file" id="jsonInput" accept=".json" class="hidden" onchange="updateFileName()">
-            <label for="jsonInput" class="block w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl cursor-pointer hover:border-blue-400 transition-all">
-                <span id="fileName" class="text-slate-500 font-medium italic">JSON файлын таңдаңыз...</span>
-            </label>
-        </div>
-
+        <h1 class="text-3xl font-black text-slate-900 mb-4 tracking-tighter uppercase italic">ҰБТ Симуляторы</h1>
+        <p class="text-slate-400 mb-12 text-sm">40 сұрақ • 120 минут • 50 балл<br>Нағыз ҰБТ форматындағы тест</p>
         <div class="space-y-4">
-            <button onclick="handleStart()" class="w-full py-4 bg-blue-600 text-white rounded-2xl font-bold text-lg hover:bg-blue-700 shadow-lg shadow-blue-100 transition-all active:scale-95">
-                ТЕСТТІ БАСТАУ
-            </button>
-            <button onclick="window.location.href='history.html'" class="w-full py-4 bg-white text-slate-600 rounded-2xl font-bold border border-slate-200 hover:bg-slate-50">
-                МЕНІҢ НӘТИЖЕЛЕРІМ
-            </button>
+            <button onclick="window.location.href='play.html'" class="w-full py-5 bg-blue-600 text-white rounded-2xl font-black text-lg hover:bg-blue-700 shadow-xl shadow-blue-100 transition-all active:scale-95 uppercase tracking-widest">ТЕСТТІ БАСТАУ</button>
+            <button onclick="window.location.href='history.html'" class="w-full py-5 bg-white text-slate-600 rounded-2xl font-bold text-sm hover:bg-slate-50 border border-slate-200 transition-all uppercase tracking-widest">МЕНІҢ НӘТИЖЕЛЕРІМ</button>
         </div>
+        <p class="mt-12 text-[10px] font-black text-slate-300 uppercase tracking-[0.3em]">JARYQ ACADEMY STYLE</p>
     </div>
-
-    <script>
-        function updateFileName() {
-            const input = document.getElementById('jsonInput');
-            if(input.files[0]) document.getElementById('fileName').innerText = input.files[0].name;
-        }
-
-        async function handleStart() {
-            const fileInput = document.getElementById('jsonInput');
-            if (!fileInput.files[0]) return alert('Алдымен тест файлын жүктеңіз!');
-            
-            // GitHub-та жұмыс істеуі үшін "play.html"-ға өтеміз
-            // GitHub сервері файлды сақтай алмайды, сондықтан क्वेश्चंस.json файлы репозиторийде болуы керек
-            window.location.href = 'play.html';
-        }
-    </script>
 </body>
 </html>
